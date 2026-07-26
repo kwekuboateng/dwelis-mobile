@@ -1,25 +1,53 @@
 {
   "expo": {
-    "name": "dwelis-mobile",
+    "name": "Dwelis",
     "slug": "dwelis-mobile",
-    "version": "1.0.0",
+    "owner": "kwekuboateng",
+    "version": "0.1.0",
     "orientation": "portrait",
+    "scheme": "dwelis",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FAFAFA"
+    },
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.dwelis.mobile",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FAFAFA"
       },
-      "predictiveBackGestureEnabled": false
+      "package": "com.dwelis.mobile"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
+    "platforms": ["ios", "android"],
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#5DD3B6"
+        }
+      ]
+    ],
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "extra": {
+      "apiBaseUrl": "https://api.dwelis.com",
+      "apiBaseUrlDev": "http://localhost:4001",
+      "eas": {
+        "projectId": "REPLACE_WITH_NEW_EAS_PROJECT_ID"
+      }
     }
   }
 }
