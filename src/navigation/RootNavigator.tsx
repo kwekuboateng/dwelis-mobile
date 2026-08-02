@@ -9,6 +9,12 @@ import { SignupScreen } from '@/screens/auth/SignupScreen';
 import { VerifyEmailScreen } from '@/screens/auth/VerifyEmailScreen';
 import { VerifyPhoneScreen } from '@/screens/auth/VerifyPhoneScreen';
 import { ListingDetailScreen } from '@/screens/guest/ListingDetailScreen';
+import { ChatThreadScreen } from '@/screens/guest/ChatThreadScreen';
+import {
+  BrowseCityStaysScreen,
+  HandpickedCollectionScreen,
+  SearchResultsScreen,
+} from '@/screens/guest/DiscoveryScreens';
 import { colors } from '@/theme';
 import type { RootStackParamList } from './types';
 
@@ -60,7 +66,27 @@ export function RootNavigator() {
       <Stack.Screen
         name="ListingDetail"
         component={ListingDetailScreen}
-        options={{ title: 'Stay details', presentation: 'card' }}
+        options={{ headerShown: false, presentation: 'card' }}
+      />
+      <Stack.Screen
+        name="HandpickedCollection"
+        component={HandpickedCollectionScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="BrowseCityStays"
+        component={BrowseCityStaysScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SearchResults"
+        component={SearchResultsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ChatThread"
+        component={ChatThreadScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

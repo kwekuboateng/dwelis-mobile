@@ -4,6 +4,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider, useAuth } from '@/shared/context/AuthContext';
+import { BookmarkProvider } from '@/shared/context/BookmarkContext';
 import { RootNavigator } from '@/navigation/RootNavigator';
 import { colors } from '@/theme';
 
@@ -37,7 +38,9 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <AuthProvider>
-          <AppShell />
+          <BookmarkProvider>
+            <AppShell />
+          </BookmarkProvider>
         </AuthProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
