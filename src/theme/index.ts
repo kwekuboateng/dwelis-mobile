@@ -2,7 +2,8 @@ export const colors = {
   primary: '#5DD3B6',
   primaryDark: '#45C4A5',
   primaryMuted: 'rgba(93, 211, 182, 0.14)',
-  background: '#FAFAFA',
+  primarySoft: '#E8F8F4',
+  background: '#FFFFFF',
   surface: '#FFFFFF',
   text: '#18181B',
   textSecondary: '#71717A',
@@ -11,6 +12,8 @@ export const colors = {
   error: '#F04438',
   success: '#12B76A',
   tabInactive: '#A1A1AA',
+  africaSoft: '#F8F0E6',
+  notification: '#EF4444',
 } as const;
 
 export const spacing = {
