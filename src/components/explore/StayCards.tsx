@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { SaveButton } from '@/components/listings/SaveButton';
@@ -11,6 +11,22 @@ import {
 } from '@/shared/utils/listingDisplay';
 import type { Listing } from '@/shared/types/listing';
 import { colors, radii, spacing, typography } from '@/theme';
+
+const cardRipple = Platform.select({
+  android: { color: colors.ripple, foreground: true },
+  default: undefined,
+});
+
+/** Screen-reader summary so the card reads as one item instead of four fragments. */
+function cardLabel(listing: Listing, location: string, price: string): string {
+  const parts = [listing.title];
+  if (location) parts.push(location);
+  if (listing.rating != null && listing.rating > 0) {
+    parts.push(`rated ${listing.rating.toFixed(1)} out of 5`);
+  }
+  parts.push(`${price} per night`);
+  return parts.join(', ');
+}
 
 type HandpickedCardProps = {
   listing: Listing;
@@ -25,8 +41,15 @@ export function HandpickedCard({ listing, onPress, width = 260 }: HandpickedCard
 
   return (
     <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={cardLabel(listing, location, formatGhs(price))}
+      android_ripple={cardRipple}
       onPress={onPress}
-      style={({ pressed }) => [styles.card, { width }, pressed && styles.pressed]}
+      style={({ pressed }) => [
+        styles.card,
+        { width },
+        pressed && Platform.OS === 'ios' && styles.pressed,
+      ]}
     >
       <View style={[styles.imageWrap, { height: width * 0.72 }]}>
         {listing.imageUrl ? (
@@ -50,17 +73,17 @@ export function HandpickedCard({ listing, onPress, width = 260 }: HandpickedCard
       </View>
 
       <View style={styles.body}>
-        <Text style={styles.title} numberOfLines={1}>
+        <Text style={styles.title} numberOfLines={1} maxFontSizeMultiplier={1.5}>
           {listing.title}
         </Text>
         {location ? (
-          <Text style={styles.location} numberOfLines={1}>
+          <Text style={styles.location} numberOfLines={1} maxFontSizeMultiplier={1.5}>
             {location}
           </Text>
         ) : null}
         {listing.rating != null && listing.rating > 0 ? (
           <View style={styles.ratingRow}>
-            <Ionicons name="star" size={12} color={colors.primaryDark} />
+            <Ionicons name="star" size={12} color={colors.star} />
             <Text style={styles.rating}>
               {listing.rating.toFixed(1)}
               {listing.reviewCount != null ? (
@@ -87,8 +110,15 @@ type CompactStayCardProps = {
 export function CompactStayCard({ listing, onPress, width = 150 }: CompactStayCardProps) {
   return (
     <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={listing.title}
+      android_ripple={cardRipple}
       onPress={onPress}
-      style={({ pressed }) => [styles.compactCard, { width }, pressed && styles.pressed]}
+      style={({ pressed }) => [
+        styles.compactCard,
+        { width },
+        pressed && Platform.OS === 'ios' && styles.pressed,
+      ]}
     >
       <View style={styles.compactImageWrap}>
         {listing.imageUrl ? (
@@ -110,7 +140,7 @@ export function CompactStayCard({ listing, onPress, width = 150 }: CompactStayCa
           style={styles.compactHeart}
         />
       </View>
-      <Text style={styles.compactTitle} numberOfLines={2}>
+      <Text style={styles.compactTitle} numberOfLines={2} maxFontSizeMultiplier={1.5}>
         {listing.title}
       </Text>
     </Pressable>

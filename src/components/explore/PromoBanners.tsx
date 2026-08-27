@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, radii, spacing, typography } from '@/theme';
 
@@ -8,50 +8,87 @@ type PromoBannersProps = {
   onAfricaPress?: () => void;
 };
 
+const cardRipple = Platform.select({
+  android: { color: colors.ripple, foreground: true },
+  default: undefined,
+});
+
 export function PromoBanners({ onHostPress, onAfricaPress }: PromoBannersProps) {
   return (
     <View style={styles.root}>
       <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="The Host Operating System. Learn more about hosting on Dwelis"
+        android_ripple={cardRipple}
         onPress={onHostPress}
-        style={({ pressed }) => [styles.card, styles.hostCard, pressed && styles.pressed]}
+        style={({ pressed }) => [
+          styles.card,
+          styles.hostCard,
+          pressed && Platform.OS === 'ios' && styles.pressed,
+        ]}
       >
-        <View style={styles.hostIcon}>
-          <Ionicons name="grid-outline" size={22} color={colors.primaryDark} />
+        <View style={styles.hostThumb}>
+          <View style={styles.hostThumbBar}>
+            <Ionicons name="grid" size={10} color="#fff" />
+            <View style={styles.hostThumbBarLine} />
+          </View>
+          <View style={styles.hostThumbBody}>
+            <View style={styles.hostThumbRow} />
+            <View style={styles.hostThumbRow} />
+            <View style={[styles.hostThumbRow, styles.hostThumbRowShort]} />
+          </View>
         </View>
         <View style={styles.copy}>
-          <Text style={styles.title}>The Host Operating System</Text>
-          <Text style={styles.body}>
-            Automate bookings, messaging, and payouts from one dashboard.
+          <Text style={styles.title} maxFontSizeMultiplier={1.5}>
+            The Host Operating System
           </Text>
-          <Text style={styles.link}>Learn more →</Text>
+          <Text style={styles.body} maxFontSizeMultiplier={1.5}>
+            Dwelis helps you automate operations, delight guests, and grow your portfolio — all in
+            one powerful platform.
+          </Text>
+          <Text style={styles.link} maxFontSizeMultiplier={1.5}>
+            Learn more →
+          </Text>
         </View>
         <Ionicons name="chevron-forward" size={18} color={colors.primaryDark} />
       </Pressable>
 
       <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Explore Africa differently"
+        android_ripple={cardRipple}
         onPress={onAfricaPress}
-        style={({ pressed }) => [styles.card, styles.africaCard, pressed && styles.pressed]}
+        style={({ pressed }) => [
+          styles.card,
+          styles.africaCard,
+          pressed && Platform.OS === 'ios' && styles.pressed,
+        ]}
       >
-        <View style={styles.africaIcon}>
-          <Ionicons name="globe-outline" size={22} color="#B45309" />
+        <View style={styles.africaThumb}>
+          <Ionicons name="earth-outline" size={40} color={colors.africaInk} />
         </View>
         <View style={styles.copy}>
-          <Text style={styles.title}>Explore Africa differently</Text>
-          <Text style={styles.body}>
-            From city escapes to beachfront retreats across the continent.
+          <Text style={styles.title} maxFontSizeMultiplier={1.5}>
+            Explore Africa differently
+          </Text>
+          <Text style={styles.body} maxFontSizeMultiplier={1.5}>
+            From vibrant cities to serene escapes, Dwelis connects you to exceptional stays across
+            the continent.
           </Text>
         </View>
-        <Ionicons name="chevron-forward" size={18} color="#B45309" />
+        <Ionicons name="chevron-forward" size={18} color={colors.africaInk} />
       </Pressable>
     </View>
   );
 }
 
+const THUMB = 72;
+
 const styles = StyleSheet.create({
   root: {
     paddingHorizontal: spacing.md,
     gap: spacing.md,
-    marginBottom: spacing.xl,
+    marginBottom: spacing.lg,
   },
   card: {
     flexDirection: 'row',
@@ -59,6 +96,7 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     borderRadius: radii.xl,
     padding: spacing.md,
+    overflow: 'hidden',
   },
   pressed: {
     opacity: 0.92,
@@ -69,19 +107,48 @@ const styles = StyleSheet.create({
   africaCard: {
     backgroundColor: colors.africaSoft,
   },
-  hostIcon: {
-    width: 48,
-    height: 48,
+  // Miniature of the host dashboard shown in the design.
+  hostThumb: {
+    width: THUMB,
+    height: THUMB,
     borderRadius: radii.md,
     backgroundColor: colors.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.primaryMuted,
+    overflow: 'hidden',
   },
-  africaIcon: {
-    width: 48,
-    height: 48,
+  hostThumbBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: colors.primary,
+    paddingHorizontal: 6,
+    paddingVertical: 5,
+  },
+  hostThumbBarLine: {
+    flex: 1,
+    height: 3,
+    borderRadius: 2,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+  },
+  hostThumbBody: {
+    flex: 1,
+    padding: 6,
+    gap: 5,
+  },
+  hostThumbRow: {
+    height: 8,
+    borderRadius: 2,
+    backgroundColor: colors.primaryMuted,
+  },
+  hostThumbRowShort: {
+    width: '60%',
+  },
+  africaThumb: {
+    width: THUMB,
+    height: THUMB,
     borderRadius: radii.md,
-    backgroundColor: colors.surface,
+    backgroundColor: 'rgba(255, 255, 255, 0.65)',
     alignItems: 'center',
     justifyContent: 'center',
   },

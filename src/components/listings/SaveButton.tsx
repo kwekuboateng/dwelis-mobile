@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { Platform, Pressable, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useBookmarks } from '@/shared/context/BookmarkContext';
 import { colors } from '@/theme';
@@ -27,13 +27,28 @@ export function SaveButton({
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={saved ? 'Remove from saved' : 'Save stay'}
-      hitSlop={8}
+      accessibilityLabel={
+        title
+          ? `${saved ? 'Remove' : 'Save'} ${title}${saved ? ' from saved stays' : ' to saved stays'}`
+          : saved
+            ? 'Remove from saved'
+            : 'Save stay'
+      }
+      accessibilityState={{ selected: saved }}
+      android_ripple={Platform.select({
+        android: { color: colors.ripple, borderless: true, radius: 22 },
+        default: undefined,
+      })}
+      hitSlop={12}
       onPress={(e) => {
         e.stopPropagation?.();
         void toggleBookmark(listingId, { title, source });
       }}
-      style={({ pressed }) => [styles.btn, pressed && styles.pressed, style]}
+      style={({ pressed }) => [
+        styles.btn,
+        pressed && Platform.OS === 'ios' && styles.pressed,
+        style,
+      ]}
     >
       <Ionicons
         name={saved && filledWhenSaved ? 'heart' : 'heart-outline'}
