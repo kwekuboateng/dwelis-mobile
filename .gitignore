@@ -11,3 +11,5 @@ dist/
 *.orig.*
 web-build/
 .DS_Store
+approved_android_screen/
+approved_ios_screen/
