@@ -1,6 +1,7 @@
 import React from 'react';
 import { Platform, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { ExploreScreen } from '@/screens/guest/ExploreScreen';
 import { SavedScreen } from '@/screens/guest/SavedScreen';
@@ -13,6 +14,8 @@ import type { GuestTabParamList } from './types';
 const Tab = createBottomTabNavigator<GuestTabParamList>();
 
 export function GuestTabs() {
+  const insets = useSafeAreaInsets();
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -29,9 +32,13 @@ export function GuestTabs() {
           },
           android: {
             backgroundColor: colors.surface,
+            borderTopWidth: StyleSheet.hairlineWidth,
             borderTopColor: colors.border,
-            height: 64,
-            paddingBottom: 8,
+            // Edge-to-edge is on by default, so the gesture/nav bar has to be padded around.
+            height: 64 + insets.bottom,
+            paddingTop: 8,
+            paddingBottom: 8 + insets.bottom,
+            elevation: 0,
           },
         }),
         tabBarIcon: ({ color, size, focused }) => {

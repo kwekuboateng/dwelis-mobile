@@ -39,21 +39,23 @@ export function Skeleton({
   );
 }
 
+/**
+ * Placeholders for the data-driven rails only — the hero and search card render
+ * immediately, so skeletoning them again would show a second hero while loading.
+ */
 export function HomeLoadingSkeleton() {
   return (
     <View style={styles.homeRoot}>
-      <Skeleton height={280} borderRadius={radii.xl} />
-      <View style={styles.searchBar}>
-        <Skeleton height={52} borderRadius={radii.xl} />
-      </View>
       <View style={styles.section}>
         <Skeleton width="55%" height={18} />
         <View style={styles.row}>
           {[0, 1, 2].map((i) => (
             <View key={i} style={styles.catTile}>
-              <Skeleton width={128} height={150} borderRadius={radii.lg} />
-              <Skeleton width="80%" height={12} />
-              <Skeleton width="50%" height={10} />
+              <Skeleton width={132} height={110} borderRadius={0} />
+              <View style={styles.catTileBody}>
+                <Skeleton width="80%" height={12} />
+                <Skeleton width="50%" height={10} />
+              </View>
             </View>
           ))}
         </View>
@@ -63,10 +65,21 @@ export function HomeLoadingSkeleton() {
         <View style={styles.row}>
           {[0, 1].map((i) => (
             <View key={i} style={styles.cardTile}>
-              <Skeleton width={260} height={180} borderRadius={radii.lg} />
+              <Skeleton width={260} height={188} borderRadius={radii.lg} />
               <Skeleton width="70%" height={14} />
               <Skeleton width="50%" height={12} />
               <Skeleton width="40%" height={12} />
+            </View>
+          ))}
+        </View>
+      </View>
+      <View style={styles.section}>
+        <Skeleton width="60%" height={18} />
+        <View style={styles.row}>
+          {[0, 1, 2].map((i) => (
+            <View key={i} style={styles.compactTile}>
+              <Skeleton width={150} height={120} borderRadius={radii.lg} />
+              <Skeleton width="85%" height={12} />
             </View>
           ))}
         </View>
@@ -81,11 +94,8 @@ const styles = StyleSheet.create({
   },
   homeRoot: {
     paddingHorizontal: 16,
-    gap: 20,
+    gap: 24,
     paddingBottom: 32,
-  },
-  searchBar: {
-    marginTop: -40,
   },
   section: {
     gap: 12,
@@ -93,13 +103,27 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     gap: 16,
+    overflow: 'hidden',
   },
   catTile: {
-    width: 128,
-    gap: 8,
+    width: 132,
+    borderRadius: radii.lg,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+    overflow: 'hidden',
+  },
+  catTileBody: {
+    paddingHorizontal: 8,
+    paddingTop: 8,
+    paddingBottom: 16,
+    gap: 6,
   },
   cardTile: {
     width: 260,
+    gap: 8,
+  },
+  compactTile: {
+    width: 150,
     gap: 8,
   },
 });

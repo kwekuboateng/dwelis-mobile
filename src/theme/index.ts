@@ -1,3 +1,8 @@
+import { Platform } from 'react-native';
+
+/** Minimum tappable edge length: 48dp is the Material target, 44pt the HIG target. */
+export const minTouchSize = Platform.OS === 'android' ? 48 : 44;
+
 export const colors = {
   primary: '#5DD3B6',
   primaryDark: '#45C4A5',
@@ -13,7 +18,12 @@ export const colors = {
   success: '#12B76A',
   tabInactive: '#A1A1AA',
   africaSoft: '#F8F0E6',
+  africaInk: '#B45309',
   notification: '#EF4444',
+  star: '#F59E0B',
+  ripple: 'rgba(24, 24, 27, 0.08)',
+  rippleLight: 'rgba(255, 255, 255, 0.18)',
+  scrim: 'rgba(24, 24, 27, 0.45)',
 } as const;
 
 export const spacing = {

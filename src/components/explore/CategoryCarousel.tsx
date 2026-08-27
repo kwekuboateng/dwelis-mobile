@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   ActivityIndicator,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -12,7 +13,7 @@ import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import type { ComponentProps } from 'react';
 import type { HomepageCategory } from '@/shared/types/listing';
-import { colors, radii, spacing, typography } from '@/theme';
+import { colors, minTouchSize, radii, spacing, typography } from '@/theme';
 
 const CATEGORY_IMAGES: Record<string, ImageSourcePropType> = {
   apartments: require('../../../assets/home/categories/entire-homes.jpg'),
@@ -67,7 +68,13 @@ export function CategoryCarousel({
     <View style={styles.root}>
       <View style={styles.header}>
         <Text style={styles.title}>Explore stays by category</Text>
-        <Pressable onPress={onViewAll} hitSlop={8}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="View all categories"
+          android_ripple={viewAllRipple}
+          onPress={onViewAll}
+          style={styles.viewAllBtn}
+        >
           <Text style={styles.viewAll}>View all</Text>
         </Pressable>
       </View>
@@ -83,11 +90,18 @@ export function CategoryCarousel({
           {categories.map((cat) => {
             const imageKey = cat.image || cat.slug;
             const icon = CATEGORY_ICONS[imageKey] ?? CATEGORY_ICONS[cat.slug] ?? 'home-outline';
+            const countLabel = `${cat.listingCount} ${cat.listingCount === 1 ? 'home' : 'homes'}`;
             return (
               <Pressable
                 key={cat.id}
+                accessibilityRole="button"
+                accessibilityLabel={`${cat.title}, ${countLabel}`}
+                android_ripple={tileRipple}
                 onPress={() => onSelect?.(cat)}
-                style={({ pressed }) => [styles.tile, pressed && styles.pressed]}
+                style={({ pressed }) => [
+                  styles.tile,
+                  pressed && Platform.OS === 'ios' && styles.pressed,
+                ]}
               >
                 <View style={styles.imageWrap}>
                   <Image
@@ -96,15 +110,17 @@ export function CategoryCarousel({
                     contentFit="cover"
                   />
                   <View style={styles.iconBadge}>
-                    <Ionicons name={icon} size={14} color="#fff" />
+                    <Ionicons name={icon} size={16} color={colors.primaryDark} />
                   </View>
                 </View>
-                <Text style={styles.label} numberOfLines={1}>
-                  {cat.title}
-                </Text>
-                <Text style={styles.count}>
-                  {cat.listingCount} {cat.listingCount === 1 ? 'home' : 'homes'}
-                </Text>
+                <View style={styles.tileBody}>
+                  <Text style={styles.label} numberOfLines={1} maxFontSizeMultiplier={1.5}>
+                    {cat.title}
+                  </Text>
+                  <Text style={styles.count} numberOfLines={1} maxFontSizeMultiplier={1.5}>
+                    {countLabel}
+                  </Text>
+                </View>
               </Pressable>
             );
           })}
@@ -113,6 +129,16 @@ export function CategoryCarousel({
     </View>
   );
 }
+
+const tileRipple = Platform.select({
+  android: { color: colors.ripple, foreground: true },
+  default: undefined,
+});
+
+const viewAllRipple = Platform.select({
+  android: { color: colors.ripple },
+  default: undefined,
+});
 
 const styles = StyleSheet.create({
   root: {
@@ -131,6 +157,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingRight: spacing.sm,
   },
+  viewAllBtn: {
+    minHeight: minTouchSize,
+    justifyContent: 'center',
+    paddingLeft: spacing.sm,
+    borderRadius: radii.sm,
+  },
   viewAll: {
     ...typography.footnote,
     fontWeight: '700',
@@ -138,35 +170,50 @@ const styles = StyleSheet.create({
   },
   row: {
     paddingHorizontal: spacing.md,
+    paddingBottom: spacing.xs,
     gap: spacing.md,
   },
   tile: {
-    width: 128,
+    width: 132,
+    borderRadius: radii.lg,
+    backgroundColor: colors.surface,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 1,
   },
   pressed: {
     opacity: 0.9,
   },
   imageWrap: {
     position: 'relative',
-    borderRadius: radii.lg,
-    overflow: 'hidden',
-    marginBottom: spacing.sm,
   },
   image: {
-    width: 128,
-    height: 150,
+    width: '100%',
+    height: 110,
     backgroundColor: colors.border,
   },
   iconBadge: {
     position: 'absolute',
-    left: 10,
-    bottom: 10,
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: colors.primary,
+    left: spacing.sm,
+    bottom: 0,
+    width: 32,
+    height: 32,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  tileBody: {
+    paddingHorizontal: spacing.sm,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.md,
+    gap: 2,
   },
   label: {
     ...typography.subhead,
@@ -176,6 +223,5 @@ const styles = StyleSheet.create({
   count: {
     ...typography.caption,
     color: colors.textSecondary,
-    marginTop: 2,
   },
 });

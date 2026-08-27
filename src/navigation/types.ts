@@ -18,8 +18,13 @@ export type HostTabParamList = {
 export type SearchParams = {
   where?: string;
   city?: string;
+  /** Human-readable summaries shown in the search chrome. */
   dates?: string;
   guests?: string;
+  /** ISO `YYYY-MM-DD`, forwarded to the listings API as availability filters. */
+  checkIn?: string;
+  checkOut?: string;
+  guestsCount?: number;
   featured?: boolean;
   category?: string;
   title?: string;

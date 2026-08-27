@@ -24,11 +24,20 @@ type Props = {
   mode: Mode;
 };
 
-function useListingsLoader(mode: Mode, city?: string, featured?: boolean) {
+type LoaderFilters = {
+  featured?: boolean;
+  /** ISO `YYYY-MM-DD` availability window picked in the home search sheet. */
+  checkIn?: string;
+  checkOut?: string;
+  category?: string;
+};
+
+function useListingsLoader(mode: Mode, city?: string, filters: LoaderFilters = {}) {
   const [listings, setListings] = useState<Listing[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const { featured, checkIn, checkOut, category } = filters;
 
   const load = useCallback(
     async (isRefresh = false) => {
@@ -38,6 +47,9 @@ function useListingsLoader(mode: Mode, city?: string, featured?: boolean) {
         const params: Record<string, string> = { limit: '24', sort: 'bookings' };
         if (mode === 'handpicked' || featured) params.featured = 'true';
         if (city) params.city = city;
+        if (checkIn) params.check_in = checkIn;
+        if (checkOut) params.check_out = checkOut;
+        if (category) params.category = category;
         const res = await api.get('/listings', { params });
         const page = normalizePaginated<Listing>(res.data);
         const items =
@@ -52,7 +64,7 @@ function useListingsLoader(mode: Mode, city?: string, featured?: boolean) {
         setRefreshing(false);
       }
     },
-    [mode, city, featured],
+    [mode, city, featured, checkIn, checkOut, category],
   );
 
   useEffect(() => {
@@ -154,11 +166,12 @@ export function SearchResultsScreen() {
   const insets = useSafeAreaInsets();
   const params = route.params ?? {};
   const city = params.city ?? params.where ?? 'Accra';
-  const { listings, total, loading, refreshing, load } = useListingsLoader(
-    'search',
-    city,
-    params.featured,
-  );
+  const { listings, total, loading, refreshing, load } = useListingsLoader('search', city, {
+    featured: params.featured,
+    checkIn: params.checkIn,
+    checkOut: params.checkOut,
+    category: params.category,
+  });
 
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
