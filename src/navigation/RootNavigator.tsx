@@ -15,6 +15,10 @@ import {
   HandpickedCollectionScreen,
   SearchResultsScreen,
 } from '@/screens/guest/DiscoveryScreens';
+import { HostPropertiesScreen } from '@/screens/host/HostPropertiesScreen';
+import { HostEditPropertyScreen } from '@/screens/host/HostEditPropertyScreen';
+import { HostGuestsScreen } from '@/screens/host/HostGuestsScreen';
+import { HostGuestProfileScreen } from '@/screens/host/HostGuestProfileScreen';
 import { colors } from '@/theme';
 import type { RootStackParamList } from './types';
 
@@ -86,6 +90,26 @@ export function RootNavigator() {
       <Stack.Screen
         name="ChatThread"
         component={ChatThreadScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="HostProperties"
+        component={HostPropertiesScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="HostEditProperty"
+        component={HostEditPropertyScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="HostGuests"
+        component={HostGuestsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="HostGuestProfile"
+        component={HostGuestProfileScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
