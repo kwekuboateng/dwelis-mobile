@@ -9,9 +9,10 @@ export type GuestTabParamList = {
 };
 
 export type HostTabParamList = {
-  Today: undefined;
-  Listings: undefined;
+  Overview: undefined;
   Calendar: undefined;
+  Bookings: undefined;
+  Messages: undefined;
   More: undefined;
 };
 
@@ -42,7 +43,12 @@ export type RootStackParamList = {
     title?: string;
     subtitle?: string;
     hostName?: string;
+    role?: 'guest' | 'host';
   };
+  HostProperties: undefined;
+  HostEditProperty: { id?: string } | undefined;
+  HostGuests: undefined;
+  HostGuestProfile: { guestKey: string; guestName?: string };
 };
 
 declare global {

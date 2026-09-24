@@ -77,7 +77,8 @@ export function ChatThreadScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
-  const { conversationId, kind, title, subtitle, hostName } = route.params;
+  const { conversationId, kind, title, subtitle, hostName, role } = route.params;
+  const isHostRole = role === 'host';
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -85,7 +86,7 @@ export function ChatThreadScreen() {
   const [draft, setDraft] = useState('');
   const listRef = useRef<FlatList<ChatMessage>>(null);
 
-  const displayName = hostName || title || 'Host';
+  const displayName = hostName || title || (isHostRole ? 'Guest' : 'Host');
   const listingTitle = subtitle || title || 'Stay';
 
   const normalizeMessage = useCallback(
@@ -102,23 +103,24 @@ export function ChatThreadScreen() {
         (r.sender as { id?: string } | undefined)?.id,
       );
       const senderRole = String(r.senderRole ?? r.role ?? r.from ?? '').toLowerCase();
-      const explicitMine =
-        r.isMine === true ||
-        r.mine === true ||
+      const fromGuest =
         r.fromGuest === true ||
         senderRole.includes('guest') ||
         senderRole.includes('traveller') ||
         senderRole.includes('traveler');
-      const explicitTheirs =
-        r.isMine === false ||
-        r.fromHost === true ||
-        senderRole.includes('host');
+      const fromHost = r.fromHost === true || senderRole.includes('host');
 
-      let isMine = explicitMine;
-      if (!explicitMine && !explicitTheirs && senderId && user?.id) {
+      let isMine = false;
+      if (r.isMine === true || r.mine === true) {
+        isMine = true;
+      } else if (r.isMine === false) {
+        isMine = false;
+      } else if (senderId && user?.id) {
         isMine = senderId === user.id;
-      } else if (!explicitMine && !explicitTheirs) {
-        isMine = Boolean(r.isGuest || r.sentByGuest);
+      } else if (isHostRole) {
+        isMine = fromHost || (!fromGuest && Boolean(r.sentByHost));
+      } else {
+        isMine = fromGuest || Boolean(r.isGuest || r.sentByGuest);
       }
 
       return {
@@ -136,7 +138,7 @@ export function ChatThreadScreen() {
         ),
       };
     },
-    [user?.id],
+    [user?.id, isHostRole],
   );
 
   const load = useCallback(async () => {
